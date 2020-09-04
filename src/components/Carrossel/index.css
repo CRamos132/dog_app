@@ -1,0 +1,15 @@
+.card_carrossel {
+    background-color: rgb(134, 134, 134);
+    border: solid;
+    border-width: 1px;
+    border-color: black;
+    border-radius: 10px;
+    margin-top: 10px;
+    min-height: 100px;
+    overflow-x: scroll;
+    overflow-y: hidden;
+    white-space: nowrap !important;
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap;
+}

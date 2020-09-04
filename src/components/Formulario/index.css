@@ -1,0 +1,9 @@
+.form_item{
+    margin-top: 24px !important; 
+}
+.menuItem {
+    text-transform: capitalize;
+}
+.form_main {
+    padding: 20px;
+}
