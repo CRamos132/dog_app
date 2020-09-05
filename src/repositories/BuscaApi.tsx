@@ -14,7 +14,7 @@ function BuscaApi(urlConfig: string) {
       }
       throw new Error('Algo deu errado');
     })
-    .then(res => res.json());
+    .then((res) => res.json());
 }
 
 export default BuscaApi;

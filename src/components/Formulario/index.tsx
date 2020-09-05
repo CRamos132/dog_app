@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
+import {
+  Typography, TextField, InputLabel, Input, Select, MenuItem, Button,
+} from '@material-ui/core';
 import BuscaApi from '../../repositories/BuscaApi';
 import Busca from '../../interfaces/Busca';
 import BuscasDogs from '../../classes/BuscasDogs';
 import './index.css';
-import {
-  Typography, TextField, InputLabel, Input, Select, MenuItem, Button,
-} from '@material-ui/core';
 import BuscaAtiva from '../../classes/BuscaAtiva';
 
 type FormularioProps = {
@@ -14,9 +14,37 @@ type FormularioProps = {
 }
 
 function Formulario({ buscas, buscaAtiva }: FormularioProps) {
+  const valoresIniciais: Busca = {
+    idade: '',
+    nome: '',
+    cor: '#000000',
+    raca: '',
+    subraca: '',
+    urlImg: 'https://images.dog.ceo/breeds/mountain-swiss/n02107574_1051.jpg',
+  };
   const [racas, setRacas] = useState([]);
-  const [subRaca, setSubraca] = useState([])
+  const [subRaca, setSubraca] = useState([]);
+  const [valores, setValores] = useState(valoresIniciais);
+  const [imagem, setImagem] = useState();
 
+  function selecionaImagem(buscaS: Busca) {
+    console.log(buscaS);
+    let urlImgA = 'https://dog.ceo/api/breeds/image/random';
+    if (buscaS.raca && buscaS.raca !== '') {
+      urlImgA = `https://dog.ceo/api/breed/${buscaS.raca}`;
+      if (buscaS.subraca !== '') {
+        urlImgA += `/${buscaS.subraca}`;
+      }
+      urlImgA += '/images';
+    }
+    console.log(urlImgA);
+    return BuscaApi(urlImgA)
+      .then((dados) => {
+        const imagens = [].concat(dados.message);
+        const imagemAleatoria = imagens[Math.floor(Math.random() * imagens.length)];
+        setImagem(imagemAleatoria);
+      });
+  }
   useEffect(() => {
     BuscaApi('https://dog.ceo/api/breeds/list/all')
       .then((dados) => {
@@ -28,30 +56,23 @@ function Formulario({ buscas, buscaAtiva }: FormularioProps) {
     if (buscaAtual) {
       buscaAtual = JSON.parse(buscaAtual);
       setValores(buscaAtual);
-      setSubraca([].concat(buscaAtual.subraca))
+      setSubraca([].concat(buscaAtual.subraca));
+      buscaAtiva.atualizaBusca(buscaAtual);
+      selecionaImagem(buscaAtual);
+      return;
     }
+    console.log(valores);
+    buscaAtiva.atualizaBusca(valoresIniciais);
   }, []);
-
-  const valoresIniciais: Busca = {
-    idade: '',
-    nome: '',
-    cor: '#000000',
-    raca: '',
-    subraca: '',
-  };
-
-  const [valores, setValores] = useState(valoresIniciais);
-
   function handleChange(e: any) {
     const campo = e.target.name;
     let valor = e.target.value;
-
-    // factory para aplicar funções extras de validação
+    // strategy para aplicar funções extras de validação
     const campos: any = {
       idade(valor: string) {
         let idade = valor.replace(/^[a-zA-Z]+$/, '');
         if (Number(idade) > 15) {
-          idade = '15'
+          idade = '15';
         }
         return idade;
       },
@@ -63,33 +84,32 @@ function Formulario({ buscas, buscaAtiva }: FormularioProps) {
         return nome;
       },
       raca(valor: any) {
+        setSubraca(racas[valor]);
 
-        setSubraca(racas[valor])
-        return valor
-      }
+        selecionaImagem({ ...valores, raca: valor });
+        return valor;
+      },
     };
 
     const alteracao = campos[campo];
     if (alteracao) {
       valor = alteracao(valor);
     }
-    localStorage.setItem('buscaAtual', JSON.stringify(valores));
-    
-    buscaAtiva.atualizaBusca({...valores, [campo]: valor});
-    
-    setValores({
-      ...valores,
-      [campo]: valor,
-    });
+    const novoState = { ...valores, [campo]: valor, urlImg: imagem };
+    localStorage.setItem('buscaAtual', JSON.stringify(novoState));
+
+    buscaAtiva.atualizaBusca(novoState);
+
+    setValores(novoState);
   }
 
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    if(valores.raca === '') {
-      
-      return
+    if (valores.raca === '') {
+      return;
     }
-    buscas.addBusca(valores);
+    const novaBusca = buscaAtiva.getBusca();
+    buscas.addBusca({ ...novaBusca });
     localStorage.setItem('buscaAtual', '');
     setValores(valoresIniciais);
   }

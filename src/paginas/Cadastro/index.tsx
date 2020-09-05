@@ -5,7 +5,7 @@ import Carrossel from '../../components/Carrossel';
 import Formulario from '../../components/Formulario';
 import BuscasDogs from '../../classes/BuscasDogs';
 import BuscaAtiva from '../../classes/BuscaAtiva';
-import BuscaAtual from '../../components/DisplayBusca';
+import DisplayBusca from '../../components/DisplayBusca';
 
 interface ContainerProps {}
 interface ContainerState {}
@@ -34,19 +34,20 @@ class Cadastro extends Component<ContainerProps, ContainerState> {
   }
 
   atualizaBuscas = (buscas: []) => {
-    this.setState({ ...this.state, buscas });
+    this.setState((prevState) => {
+      const newState = { ...prevState, buscas };
+      this.setState(newState);
+    });
   }
 
   render() {
     return (
       <div className="cadastro_container">
-        <div className="item">
-          <BuscaAtual busca={this.buscaAtiva}/>
-        </div>
-      <Container maxWidth="sm" className="card_main">
-        <Formulario buscas={this.buscas} buscaAtiva={this.buscaAtiva} />
-        <Carrossel buscasSalvas={this.buscas} />
-      </Container>
+        <DisplayBusca busca={this.buscaAtiva} />
+        <Container maxWidth="sm" className="card_main">
+          <Formulario buscas={this.buscas} buscaAtiva={this.buscaAtiva} />
+          <Carrossel buscasSalvas={this.buscas} />
+        </Container>
       </div>
     );
   }

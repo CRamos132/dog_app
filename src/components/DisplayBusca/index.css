@@ -1,0 +1,46 @@
+.buscaAtiva_main {
+    display: inline-block !important;
+    width: 45vw;
+    height: 90vh;
+    border: solid;
+    border-width: 1px;
+    border-color: black;
+    border-radius: 10px;
+    margin-left: 3vw;
+    margin-top: 5vh;
+    text-align: center;
+}
+.buscaAtiva_img {
+    max-width: 40vw;
+    height: auto;
+    max-height: 50vh;
+    margin-top: 5vh;
+}
+.buscaAtiva_color {
+    height: 15px;
+    width: 30vw;
+    margin-left: 7.5vw;
+    border-radius: 8px;
+}
+.buscaAtiva_cap {
+    text-transform: capitalize;
+    margin: 10px;
+}
+@media only screen and (max-width: 600px) {
+    .buscaAtiva_main {
+        width: 90vw;
+        margin-left: 5vw;
+        margin-bottom: 3vh;
+        margin-top: 3vh;
+        height: 40vh;
+    }
+    .buscaAtiva_img {
+        margin-top: 2vh;
+        max-width: 80vw;
+        max-height: 30vw;
+    }
+    .buscaAtiva_color {
+        width: 80vw;
+        margin-left: 5vw;
+    }
+}

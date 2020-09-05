@@ -1,22 +1,23 @@
 .card_main {
-    flex: 1 !important;
+    display: inline-block !important;
     border: solid;
     border-width: 1px;
     border-color: black;
     border-radius: 10px;
     background-color: rgb(134, 134, 134);
+    width: 45vw !important;
+    margin-top: 2vh !important;
 }
 .cadastro_container {
-    display: flex !important;
+    display: flex;
     flex-direction: row !important;
-    justify-content: center !important;
-    align-items: center !important;
-}
-.item {
-    flex: 1 !important;
 }
 @media only screen and (max-width: 600px) {
     .cadastro_container {
         flex-direction: column !important;
+    }
+    .card_main {
+        width: 90vw !important;
+        margin-left: 5vw;
     }
 }

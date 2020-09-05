@@ -12,7 +12,7 @@ class BuscasDogs extends Observable {
 
     addBusca(novaBusca: Busca) {
       this.buscas.push(novaBusca);
-      localStorage.setItem('buscas', JSON.stringify(this.buscas))
+      localStorage.setItem('buscas', JSON.stringify(this.buscas));
       this.notificar(this.buscas);
     }
 

@@ -8,23 +8,22 @@ import Miniatura from '../Miniatura';
 type CarrosselProps = {
     buscasSalvas: BuscasDogs
 }
-function Carrossel({buscasSalvas}: CarrosselProps) {
+function Carrossel({ buscasSalvas }: CarrosselProps) {
+  const [buscas, setBuscas] = useState([] as Busca[]);
 
-    const [ buscas, setBuscas ] = useState([] as Busca[])
+  useEffect(() => {
+    const buscasCache = localStorage.getItem('buscas');
+    buscasSalvas.inscrever(setBuscas);
+    if (buscasCache) {
+      JSON.parse(buscasCache).forEach((busca: Busca) => buscasSalvas.addBusca(busca));
+    }
+  }, []);
 
-    useEffect(() => {
-        const buscasCache = localStorage.getItem('buscas')
-        buscasSalvas.inscrever(setBuscas)
-        if(buscasCache) {
-            JSON.parse(buscasCache).forEach((busca: Busca) => buscasSalvas.addBusca(busca))
-        }
-    }, [])
-
-    return (
-        <Container className="card_carrossel">
-            {buscas.map((busca: Busca, index: number) => <Miniatura key={index} busca={busca}/>)}
-        </Container>
-    )
+  return (
+    <Container className="card_carrossel">
+      {buscas.map((busca: Busca, index: number) => <Miniatura key={index} busca={busca} />)}
+    </Container>
+  );
 }
 
 export default Carrossel;
