@@ -25,7 +25,7 @@ function Formulario({ buscas, buscaAtiva }: FormularioProps) {
   const [racas, setRacas] = useState([]);
   const [subRaca, setSubraca] = useState([]);
   const [valores, setValores] = useState(valoresIniciais);
-  const [imagem, setImagem] = useState();
+  const [imagem, setImagem] = useState('https://images.dog.ceo/breeds/mountain-swiss/n02107574_1051.jpg');
 
   function selecionaImagem(buscaS: Busca) {
     console.log(buscaS);
