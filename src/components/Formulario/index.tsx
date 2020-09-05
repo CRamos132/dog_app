@@ -21,6 +21,7 @@ function Formulario({ buscas, buscaAtiva }: FormularioProps) {
     raca: '',
     subraca: '',
     urlImg: 'https://images.dog.ceo/breeds/mountain-swiss/n02107574_1051.jpg',
+    valor: 0,
   };
   const [racas, setRacas] = useState([]);
   const [subRaca, setSubraca] = useState([]);
@@ -48,66 +49,72 @@ function Formulario({ buscas, buscaAtiva }: FormularioProps) {
       .then((dados) => {
         setRacas(dados.message);
       });
+    buscaAtiva.inscrever(setValores);
     // verifica se há alguma busca no localStorage
     let buscaAtual: any = localStorage.getItem('buscaAtual');
     if (buscaAtual) {
       buscaAtual = JSON.parse(buscaAtual);
-      setValores(buscaAtual);
       setSubraca([].concat(buscaAtual.subraca));
       buscaAtiva.atualizaBusca(buscaAtual);
       selecionaImagem(buscaAtual);
       return;
     }
-    console.log(valores);
     buscaAtiva.atualizaBusca(valoresIniciais);
   }, []);
+  function attState(state: Busca) {
+    localStorage.setItem('buscaAtual', JSON.stringify(state));
+    buscaAtiva.atualizaBusca(state);
+  }
+
   function handleChange(e: any) {
     const campo = e.target.name;
     let input = e.target.value;
+
     // strategy para aplicar funções extras de validação
     const campos: any = {
       idade(valor: string) {
-        let idade = valor.replace(/^[a-zA-Z]+$/, '');
-        if (Number(idade) > 15) {
-          idade = '15';
+        let novaIdade = valor.replace(/^[a-zA-Z]+$/, '');
+        if (Number(novaIdade) > 15) {
+          novaIdade = '15';
         }
-        return idade;
+        const novoState = { ...valores, idade: novaIdade };
+        attState(novoState);
       },
       nome(valor: string) {
-        const nome = valor;
-        if (nome.length > 5) {
-          return nome.substr(0, 5);
+        const novoNome = valor;
+        if (novoNome.length > 5) {
+          novoNome.substr(0, 5);
         }
-        return nome;
+        const novoState = { ...valores, nome: novoNome };
+        attState(novoState);
       },
       raca(valor: any) {
         setSubraca(racas[valor]);
-        selecionaImagem({ ...valores, raca: valor });
-        return valor;
+        const novoState = { ...valores, raca: valor, subraca: '' };
+        selecionaImagem(novoState)
+          .then((dado) => {
+            const stateN: Busca = { ...novoState, urlImg: dado };
+            attState(stateN);
+          });
+      },
+      subraca(valor: any) {
+        const novoState = { ...valores, subraca: valor };
+        selecionaImagem(novoState)
+          .then((dado) => {
+            const stateN: Busca = { ...novoState, urlImg: dado };
+            attState(stateN);
+          });
       },
     };
 
     const alteracao = campos[campo];
     if (alteracao) {
       input = alteracao(input);
+      return;
     }
-    if (campo === 'raca' || campo === 'subraca') {
-      selecionaImagem({ ...valores, [campo]: input })
-        .then((dado) => {
-          const novoState = { ...valores, [campo]: input, urlImg: dado };
-          localStorage.setItem('buscaAtual', JSON.stringify(novoState));
 
-          buscaAtiva.atualizaBusca(novoState);
-
-          setValores(novoState);
-        });
-    }
     const novoState = { ...valores, [campo]: input };
-    localStorage.setItem('buscaAtual', JSON.stringify(novoState));
-
-    buscaAtiva.atualizaBusca(novoState);
-
-    setValores(novoState);
+    attState(novoState);
   }
 
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -119,6 +126,7 @@ function Formulario({ buscas, buscaAtiva }: FormularioProps) {
     buscas.addBusca({ ...novaBusca });
     localStorage.setItem('buscaAtual', '');
     setValores(valoresIniciais);
+    buscaAtiva.atualizaBusca(valoresIniciais);
   }
 
   return (
@@ -179,6 +187,7 @@ function Formulario({ buscas, buscaAtiva }: FormularioProps) {
         onChange={handleChange}
       >
         {subRaca.map((subraca: string, index: number) => <MenuItem key={index} value={subraca} className="menuItem">{subraca}</MenuItem>)}
+
       </Select>
 
       <Button variant="contained" color="primary" type="submit" className="form_item" fullWidth>

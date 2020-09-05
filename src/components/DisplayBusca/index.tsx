@@ -23,7 +23,8 @@ function DisplayBusca({ busca }: BuscaAtualProps) {
       <div className="buscaAtiva_color" style={{ backgroundColor: buscaAtiva.cor }} />
       <Typography className="buscaAtiva_cap">{buscaAtiva.raca}</Typography>
       <Typography className="buscaAtiva_cap">{buscaAtiva.subraca}</Typography>
-      <Typography>{buscaAtiva.idade}</Typography>
+      <Typography>{`Idade: ${buscaAtiva.idade}`}</Typography>
+      <Typography>{`Valor: ${buscaAtiva.valor}`}</Typography>
     </div>
   );
 }

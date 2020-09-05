@@ -14,7 +14,8 @@ function Miniatura({ busca }: MiniaturaProps) {
         <div className="miniatura_color" style={{ backgroundColor: busca.cor }} />
         <Typography className="miniatura_cap">{busca.raca}</Typography>
         <Typography className="miniatura_cap">{busca.subraca}</Typography>
-        <Typography>{busca.idade}</Typography>
+        <Typography>{`Idade: ${busca.idade}`}</Typography>
+        <Typography>{`Valor: ${busca.valor}`}</Typography>
       </div>
       <div className="miniatura_flex_item">
         <img className="miniatura_img" alt="Foto de um cachorro" src={busca.urlImg} />
