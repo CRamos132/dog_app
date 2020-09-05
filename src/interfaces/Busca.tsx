@@ -6,4 +6,4 @@ export default interface Busca {
     subraca: string
     urlImg?: string,
     valor?: number
-}
+};

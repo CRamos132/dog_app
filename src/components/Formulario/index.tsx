@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, ReactEventHandler } from 'react';
 import {
   Typography, TextField, InputLabel, Input, Select, MenuItem, Button,
 } from '@material-ui/core';
@@ -25,7 +25,7 @@ function Formulario({ buscas, buscaAtiva }: FormularioProps) {
   };
   const [racas, setRacas] = useState([]);
   const [subRaca, setSubraca] = useState([]);
-  const [valores, setValores] = useState(valoresIniciais);
+  const [valores, setValores] = useState<Busca>(valoresIniciais);
 
   function selecionaImagem(buscaS: Busca) {
     let urlImgA = 'https://dog.ceo/api/breeds/image/random';
@@ -51,9 +51,9 @@ function Formulario({ buscas, buscaAtiva }: FormularioProps) {
       });
     buscaAtiva.inscrever(setValores);
     // verifica se há alguma busca no localStorage
-    let buscaAtual: any = localStorage.getItem('buscaAtual');
-    if (buscaAtual) {
-      buscaAtual = JSON.parse(buscaAtual);
+    const buscaString = localStorage.getItem('buscaAtual');
+    if (buscaString) {
+      const buscaAtual = JSON.parse(buscaString);
       setSubraca([].concat(buscaAtual.subraca));
       buscaAtiva.atualizaBusca(buscaAtual);
       selecionaImagem(buscaAtual);
@@ -66,9 +66,10 @@ function Formulario({ buscas, buscaAtiva }: FormularioProps) {
     buscaAtiva.atualizaBusca(state);
   }
 
+  // é passado any para pode lidar com evento de input e de select
   function handleChange(e: any) {
-    const campo = e.target.name;
-    let input = e.target.value;
+    const campo: string = e.target.name;
+    let input: string = e.target.value;
 
     // strategy para aplicar funções extras de validação
     const campos: any = {

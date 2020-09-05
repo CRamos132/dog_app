@@ -4,11 +4,12 @@
     height: 90vh;
     border: solid;
     border-width: 1px;
-    border-color: black;
+    border-color: #33384D;
     border-radius: 10px;
     margin-left: 3vw;
     margin-top: 5vh;
     text-align: center;
+    background-color: #666A7A;
 }
 .buscaAtiva_img {
     max-width: 40vw;

@@ -9,7 +9,7 @@ type BuscaAtualProps = {
 }
 
 function DisplayBusca({ busca }: BuscaAtualProps) {
-  const [buscaAtiva, setBuscaAtiva] = useState(({} as Busca));
+  const [buscaAtiva, setBuscaAtiva] = useState<Busca>();
 
   useEffect(() => {
     busca.inscrever(setBuscaAtiva);
@@ -18,13 +18,13 @@ function DisplayBusca({ busca }: BuscaAtualProps) {
   return (
 
     <div className="buscaAtiva_main">
-      <img className="buscaAtiva_img" alt="Foto de um cachorro" src={buscaAtiva.urlImg} />
-      <h1>{buscaAtiva.nome}</h1>
-      <div className="buscaAtiva_color" style={{ backgroundColor: buscaAtiva.cor }} />
-      <Typography className="buscaAtiva_cap">{buscaAtiva.raca}</Typography>
-      <Typography className="buscaAtiva_cap">{buscaAtiva.subraca}</Typography>
-      <Typography>{`Idade: ${buscaAtiva.idade}`}</Typography>
-      <Typography>{`Valor: ${buscaAtiva.valor}`}</Typography>
+      <img className="buscaAtiva_img" alt="Foto de um cachorro" src={buscaAtiva?.urlImg} />
+      <h1>{buscaAtiva?.nome}</h1>
+      <div className="buscaAtiva_color" style={{ backgroundColor: buscaAtiva?.cor }} />
+      <Typography className="buscaAtiva_cap">{buscaAtiva?.raca}</Typography>
+      <Typography className="buscaAtiva_cap">{buscaAtiva?.subraca}</Typography>
+      <Typography>{`Idade: ${buscaAtiva?.idade}`}</Typography>
+      <Typography>{`Valor: ${buscaAtiva?.valor}`}</Typography>
     </div>
   );
 }

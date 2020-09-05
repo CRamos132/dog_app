@@ -2,9 +2,9 @@
     display: inline-block !important;
     border: solid;
     border-width: 1px;
-    border-color: black;
+    border-color: #33384D;
     border-radius: 10px;
-    background-color: rgb(134, 134, 134);
+    background-color: #666A7A;
     width: 45vw !important;
     margin-top: 2vh !important;
 }

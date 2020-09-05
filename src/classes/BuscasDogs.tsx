@@ -2,7 +2,7 @@ import Busca from '../interfaces/Busca';
 import Observable from './Observable';
 
 class BuscasDogs extends Observable {
-    readonly buscas: Busca[]
+    buscas: Busca[]
 
     constructor() {
       super();
@@ -18,6 +18,11 @@ class BuscasDogs extends Observable {
 
     getBuscas(): Busca[] {
       return this.buscas;
+    }
+
+    deletarBusca(index: number) {
+      this.buscas = this.buscas.splice(index, 1);
+      this.notificar(this.buscas);
     }
 }
 
