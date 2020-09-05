@@ -25,10 +25,8 @@ function Formulario({ buscas, buscaAtiva }: FormularioProps) {
   const [racas, setRacas] = useState([]);
   const [subRaca, setSubraca] = useState([]);
   const [valores, setValores] = useState(valoresIniciais);
-  const [imagem, setImagem] = useState('https://images.dog.ceo/breeds/mountain-swiss/n02107574_1051.jpg');
 
   function selecionaImagem(buscaS: Busca) {
-    console.log(buscaS);
     let urlImgA = 'https://dog.ceo/api/breeds/image/random';
     if (buscaS.raca && buscaS.raca !== '') {
       urlImgA = `https://dog.ceo/api/breed/${buscaS.raca}`;
@@ -37,12 +35,12 @@ function Formulario({ buscas, buscaAtiva }: FormularioProps) {
       }
       urlImgA += '/images';
     }
-    console.log(urlImgA);
+
     return BuscaApi(urlImgA)
       .then((dados) => {
         const imagens = [].concat(dados.message);
         const imagemAleatoria = imagens[Math.floor(Math.random() * imagens.length)];
-        setImagem(imagemAleatoria);
+        return imagemAleatoria;
       });
   }
   useEffect(() => {
@@ -50,7 +48,6 @@ function Formulario({ buscas, buscaAtiva }: FormularioProps) {
       .then((dados) => {
         setRacas(dados.message);
       });
-
     // verifica se há alguma busca no localStorage
     let buscaAtual: any = localStorage.getItem('buscaAtual');
     if (buscaAtual) {
@@ -66,7 +63,7 @@ function Formulario({ buscas, buscaAtiva }: FormularioProps) {
   }, []);
   function handleChange(e: any) {
     const campo = e.target.name;
-    let valor = e.target.value;
+    let input = e.target.value;
     // strategy para aplicar funções extras de validação
     const campos: any = {
       idade(valor: string) {
@@ -85,7 +82,6 @@ function Formulario({ buscas, buscaAtiva }: FormularioProps) {
       },
       raca(valor: any) {
         setSubraca(racas[valor]);
-
         selecionaImagem({ ...valores, raca: valor });
         return valor;
       },
@@ -93,9 +89,20 @@ function Formulario({ buscas, buscaAtiva }: FormularioProps) {
 
     const alteracao = campos[campo];
     if (alteracao) {
-      valor = alteracao(valor);
+      input = alteracao(input);
     }
-    const novoState = { ...valores, [campo]: valor, urlImg: imagem };
+    if (campo === 'raca' || campo === 'subraca') {
+      selecionaImagem({ ...valores, [campo]: input })
+        .then((dado) => {
+          const novoState = { ...valores, [campo]: input, urlImg: dado };
+          localStorage.setItem('buscaAtual', JSON.stringify(novoState));
+
+          buscaAtiva.atualizaBusca(novoState);
+
+          setValores(novoState);
+        });
+    }
+    const novoState = { ...valores, [campo]: input };
     localStorage.setItem('buscaAtual', JSON.stringify(novoState));
 
     buscaAtiva.atualizaBusca(novoState);

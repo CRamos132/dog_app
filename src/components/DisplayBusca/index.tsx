@@ -3,8 +3,6 @@ import './index.css';
 import { Typography } from '@material-ui/core';
 import BuscaAtiva from '../../classes/BuscaAtiva';
 import Busca from '../../interfaces/Busca';
-import BuscaApi from '../../repositories/BuscaApi';
-import Loading from '../../imagens/loading.gif';
 
 type BuscaAtualProps = {
     busca: BuscaAtiva
@@ -12,30 +10,9 @@ type BuscaAtualProps = {
 
 function DisplayBusca({ busca }: BuscaAtualProps) {
   const [buscaAtiva, setBuscaAtiva] = useState(({} as Busca));
-  // const [imagem, setImagem] = useState(Loading);
-
-  // function selecionaImagem(buscaS: Busca) {
-  //   let urlImgA = 'https://dog.ceo/api/breeds/image/random';
-
-  //   if (buscaS.raca && buscaS.raca !== '') {
-  //     urlImgA = `https://dog.ceo/api/breed/${buscaS.raca}`;
-  //     if (buscaS.subraca !== '') {
-  //       urlImgA += `/${buscaS.subraca}`;
-  //     }
-  //     urlImgA += '/images';
-  //   }
-  //   BuscaApi(urlImgA)
-  //     .then((dados) => {
-  //       const imagens = [].concat(dados.message);
-  //       const imagemAleatoria = imagens[Math.floor(Math.random() * imagens.length)];
-  //       setImagem(imagemAleatoria);
-  //     });
-  // }
 
   useEffect(() => {
     busca.inscrever(setBuscaAtiva);
-    console.log(buscaAtiva);
-    // busca.inscrever(selecionaImagem);
   }, []);
 
   return (
