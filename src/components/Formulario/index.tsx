@@ -1,4 +1,4 @@
-import React, { useState, useEffect, ReactEventHandler } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Typography, TextField, InputLabel, Input, Select, MenuItem, Button,
 } from '@material-ui/core';
@@ -7,6 +7,7 @@ import Busca from '../../interfaces/Busca';
 import BuscasDogs from '../../classes/BuscasDogs';
 import './index.css';
 import BuscaAtiva from '../../classes/BuscaAtiva';
+import Modal from '../Modal';
 
 type FormularioProps = {
     buscas: BuscasDogs
@@ -23,10 +24,13 @@ function Formulario({ buscas, buscaAtiva }: FormularioProps) {
     urlImg: 'https://images.dog.ceo/breeds/mountain-swiss/n02107574_1051.jpg',
     valor: 0,
   };
+  const modalInicial = { aberto: false, texto: 'Favor preencher todos os campos', extra: () => {} };
   const [racas, setRacas] = useState([]);
-  const [subRaca, setSubraca] = useState([]);
+  const [subRaca, setSubraca] = useState<string[]>([]);
   const [valores, setValores] = useState<Busca>(valoresIniciais);
+  const [modal, setModal] = useState(modalInicial);
 
+  //retorna uma URL de imagem
   function selecionaImagem(buscaS: Busca) {
     let urlImgA = 'https://dog.ceo/api/breeds/image/random';
     if (buscaS.raca && buscaS.raca !== '') {
@@ -44,32 +48,42 @@ function Formulario({ buscas, buscaAtiva }: FormularioProps) {
         return imagemAleatoria;
       });
   }
+
+  // cria um novo state com uma imagem baseada na busca atual
+  function novoStateImg(stateAtual: Busca) {
+    return selecionaImagem(stateAtual)
+      .then((dado) => {
+        const stateN: Busca = { ...stateAtual, urlImg: dado };
+        return stateN;
+      });
+  }
   useEffect(() => {
     BuscaApi('https://dog.ceo/api/breeds/list/all')
       .then((dados) => {
         setRacas(dados.message);
       });
     buscaAtiva.inscrever(setValores);
+    let stateInicial = valoresIniciais
     // verifica se há alguma busca no localStorage
     const buscaString = localStorage.getItem('buscaAtual');
     if (buscaString) {
-      const buscaAtual = JSON.parse(buscaString);
-      setSubraca([].concat(buscaAtual.subraca));
-      buscaAtiva.atualizaBusca(buscaAtual);
-      selecionaImagem(buscaAtual);
-      return;
+      stateInicial = JSON.parse(buscaString);
     }
-    buscaAtiva.atualizaBusca(valoresIniciais);
+    setSubraca([stateInicial.subraca]);
+    attState(stateInicial);
   }, []);
+
+  // atualiza o state e salva a busca no localStorage
   function attState(state: Busca) {
     localStorage.setItem('buscaAtual', JSON.stringify(state));
     buscaAtiva.atualizaBusca(state);
   }
 
   // é passado any para pode lidar com evento de input e de select
-  function handleChange(e: any) {
+  async function handleChange(e: any) {
     const campo: string = e.target.name;
-    let input: string = e.target.value;
+    const input: string = e.target.value;
+    let tempState = valores;
 
     // strategy para aplicar funções extras de validação
     const campos: any = {
@@ -79,55 +93,52 @@ function Formulario({ buscas, buscaAtiva }: FormularioProps) {
           novaIdade = '15';
         }
         const novoState = { ...valores, idade: novaIdade };
-        attState(novoState);
+        return novoState
       },
       nome(valor: string) {
-        const novoNome = valor;
+        let novoNome = valor;
         if (novoNome.length > 5) {
-          novoNome.substr(0, 5);
+          novoNome = novoNome.substr(0, 5);
         }
         const novoState = { ...valores, nome: novoNome };
-        attState(novoState);
+        return novoState;
       },
       raca(valor: any) {
         setSubraca(racas[valor]);
         const novoState = { ...valores, raca: valor, subraca: '' };
-        selecionaImagem(novoState)
-          .then((dado) => {
-            const stateN: Busca = { ...novoState, urlImg: dado };
-            attState(stateN);
-          });
+        return novoStateImg(novoState);
       },
       subraca(valor: any) {
         const novoState = { ...valores, subraca: valor };
-        selecionaImagem(novoState)
-          .then((dado) => {
-            const stateN: Busca = { ...novoState, urlImg: dado };
-            attState(stateN);
-          });
+        return novoStateImg(novoState);
       },
     };
 
     const alteracao = campos[campo];
     if (alteracao) {
-      input = alteracao(input);
-      return;
+      tempState = await alteracao(input);
+    } else {
+      tempState = { ...valores, [campo]: input };
     }
 
-    const novoState = { ...valores, [campo]: input };
-    attState(novoState);
+    attState(tempState);
   }
-
-  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    if (valores.raca === '') {
-      return;
-    }
+  const adicionaBusca = () => {
     const novaBusca = buscaAtiva.getBusca();
-    buscas.addBusca({ ...novaBusca });
-    localStorage.setItem('buscaAtual', '');
+    buscas.addBusca(novaBusca);
     setValores(valoresIniciais);
-    buscaAtiva.atualizaBusca(valoresIniciais);
+    attState(valoresIniciais);
+    setModal({ ...modal, aberto: true, texto: 'Busca adicionada com sucesso' });
+  };
+
+  // faz validação do envio do formulário
+  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    let modalState = { aberto: true, extra: adicionaBusca, texto: 'Cachorro cadastrado com sucesso' };
+    e.preventDefault();
+    if (valores.raca === '' || valores.idade === '' || valores.nome === '') {
+      modalState = { ...modal, aberto: true };
+    }
+    setModal(modalState);
   }
 
   return (
@@ -194,6 +205,7 @@ function Formulario({ buscas, buscaAtiva }: FormularioProps) {
       <Button variant="contained" color="primary" type="submit" className="form_item" fullWidth>
         Encomendar
       </Button>
+      <Modal modal={modal} altera={setModal} valoresIniciais={modalInicial} />
     </form>
   );
 }
