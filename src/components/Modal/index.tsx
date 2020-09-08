@@ -21,7 +21,7 @@ function Modal({ modal, altera, valoresIniciais }: ModalProps) {
   return (
     <Dialog onClose={handleClose} aria-labelledby="simple-dialog-title" open={modal.aberto}>
       <div className="modal_main">
-        <Typography>{modal.texto}</Typography>
+        <Typography data-testid="modal_txt" >{modal.texto}</Typography>
         <Button className="modal_btn" variant="contained" color="primary" onClick={handleClose}>
           Ok
         </Button>

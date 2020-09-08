@@ -10,11 +10,11 @@ function Miniatura({ busca }: MiniaturaProps) {
   return (
     <Container className="miniatura_main">
       <div className="miniatura_flex_item">
-        <h1>{busca.nome}</h1>
+        <h1 data-testid="mini_nome">{busca.nome}</h1>
         <div className="miniatura_color" style={{ backgroundColor: busca.cor }} />
-        <Typography className="miniatura_cap">{busca.raca}</Typography>
-        <Typography className="miniatura_cap">{busca.subraca}</Typography>
-        <Typography>{`Idade: ${busca.idade}`}</Typography>
+        <Typography data-testid="mini_raca" className="miniatura_cap">{busca.raca}</Typography>
+        <Typography data-testid="mini_subraca" className="miniatura_cap">{busca.subraca}</Typography>
+        <Typography data-testid="mini_idade">{`Idade: ${busca.idade}`}</Typography>
         <Typography>{`Valor: ${busca.valor}`}</Typography>
       </div>
       <div className="miniatura_flex_item">

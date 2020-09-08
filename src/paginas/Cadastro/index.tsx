@@ -20,6 +20,10 @@ class Cadastro extends Component<ContainerProps, ContainerState> {
   constructor(props: ContainerProps) {
     super(props);
 
+    // visando a escalabilidade do projeto foram utilizados dois objetos
+    // que fucionam como Observables que guardam os valores que seriam states
+    // desta maneira pode-se passar eles como props no lugar do state, assim 
+    // quando os valores são atualizados o componente pai não é re-renderizado
     this.buscas = new BuscasDogs();
     this.buscaAtiva = new BuscaAtiva();
     this.attBuscas = this.atualizaBuscas.bind(this);

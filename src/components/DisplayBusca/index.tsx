@@ -9,7 +9,7 @@ type BuscaAtualProps = {
 }
 
 function DisplayBusca({ busca }: BuscaAtualProps) {
-  const [buscaAtiva, setBuscaAtiva] = useState<Busca>();
+  const [buscaAtiva, setBuscaAtiva] = useState<Busca>(busca.getBusca());
 
   useEffect(() => {
     busca.inscrever(setBuscaAtiva);

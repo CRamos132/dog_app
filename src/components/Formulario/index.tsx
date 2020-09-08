@@ -55,12 +55,20 @@ function Formulario({ buscas, buscaAtiva }: FormularioProps) {
       .then((dado) => {
         const stateN: Busca = { ...stateAtual, urlImg: dado };
         return stateN;
+      })
+      .catch((res: Response) => {
+        alert('Algo deu errado, favor tentar novamente');
+        console.log(res.text)
       });
   }
   useEffect(() => {
     BuscaApi('https://dog.ceo/api/breeds/list/all')
       .then((dados) => {
         setRacas(dados.message);
+      })
+      .catch((res: Response) => {
+        alert('Algo deu errado, favor tentar novamente');
+        console.log(res.text)
       });
     buscaAtiva.inscrever(setValores);
     let stateInicial = valoresIniciais
