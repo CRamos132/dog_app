@@ -6,7 +6,7 @@
       "dom.iterable",
       "esnext"
     ],
-    "types": ["@material-ui/core"],
+    "types": ["@material-ui/core", "jest"],
     "allowJs": true,
     "skipLibCheck": true,
     "esModuleInterop": true,

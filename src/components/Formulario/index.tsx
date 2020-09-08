@@ -128,7 +128,6 @@ function Formulario({ buscas, buscaAtiva }: FormularioProps) {
     buscas.addBusca(novaBusca);
     setValores(valoresIniciais);
     attState(valoresIniciais);
-    setModal({ ...modal, aberto: true, texto: 'Busca adicionada com sucesso' });
   };
 
   // faz validação do envio do formulário
@@ -153,6 +152,7 @@ function Formulario({ buscas, buscaAtiva }: FormularioProps) {
         fullWidth
         margin="normal"
         onChange={handleChange}
+        inputProps={{ "data-testid": "form_input_nome" }}
       />
 
       <TextField
@@ -163,6 +163,7 @@ function Formulario({ buscas, buscaAtiva }: FormularioProps) {
         fullWidth
         margin="normal"
         onChange={handleChange}
+        inputProps={{ "data-testid": "form_input_idade" }}
       />
 
       <InputLabel id="form_cor_label" className="form_item">Cor</InputLabel>
@@ -173,6 +174,7 @@ function Formulario({ buscas, buscaAtiva }: FormularioProps) {
         fullWidth
         type="color"
         onChange={handleChange}
+        inputProps={{ "data-testid": "form_input_cor" }}
       />
 
       <InputLabel id="form_raca_label" className="form_item">Raça</InputLabel>
@@ -184,7 +186,9 @@ function Formulario({ buscas, buscaAtiva }: FormularioProps) {
         className="menuItem"
         value={valores.raca}
         onChange={handleChange}
+        inputProps={{ "data-testid": "form_select_raca" }}
       >
+        <MenuItem value="" className="menuItem">Selecione uma raça</MenuItem>
         {Object.keys(racas).map((raca: string, index: number) => <MenuItem key={index} value={raca} className="menuItem">{raca}</MenuItem>)}
       </Select>
 
@@ -197,12 +201,20 @@ function Formulario({ buscas, buscaAtiva }: FormularioProps) {
         className="menuItem"
         value={valores.subraca}
         onChange={handleChange}
+        inputProps={{ "data-testid": "form_select_subraca" }}
       >
         {subRaca.map((subraca: string, index: number) => <MenuItem key={index} value={subraca} className="menuItem">{subraca}</MenuItem>)}
 
       </Select>
 
-      <Button variant="contained" color="primary" type="submit" className="form_item" fullWidth>
+      <Button 
+        variant="contained" 
+        color="primary" 
+        type="submit" 
+        className="form_item" 
+        fullWidth 
+        data-testid="form_btn_submit"
+      >
         Encomendar
       </Button>
       <Modal modal={modal} altera={setModal} valoresIniciais={modalInicial} />
