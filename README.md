@@ -1,6 +1,7 @@
 # Projeto de cadastro de cachorros
 
 Projeto disponível em: https://dog-app-ecru.vercel.app/
+
 O projeto  um site de cadastro de cachorros que utiliza [uma API](https://dog.ceo/dog-api/) para puxar raças, subraças e fotos de cachorros 
 e foi desenvolvido em ReactJS
 Para ver as funcionalidades disponíveis verifique o release atual.
