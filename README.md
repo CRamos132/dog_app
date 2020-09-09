@@ -25,6 +25,6 @@ Abre o projeto no localhost
 
 Roda os testes automatizados do diretório `dog_app/src/__tests__/`
 
-## `npm install`
+### `npm install`
 
 Após clonar o repositório usar este comando para instalar todas as dependências
