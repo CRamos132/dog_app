@@ -1,4 +1,7 @@
-// checa status da resposta
+/**
+ * Checa o status da resposta
+ * @param res resposta da API
+ */
 function isOk(res: Response) {
   if (res.ok) {
     return res;
