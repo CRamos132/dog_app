@@ -156,6 +156,9 @@ function Formulario({ cadastros, cadastroAtual }: FormularioProps) {
     if (valores.raca === '' || valores.idade === '' || valores.nome === '') {
       modalState = { ...modal, aberto: true };
     }
+    if (valores.nome.length < 3) {
+      modalState = {...modal, texto: 'O nome do cachorro deve ter pelo menos 3 letras', aberto: true}
+    }
     setModal(modalState);
   }
 
