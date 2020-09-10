@@ -3,43 +3,44 @@ import './index.css';
 import { Container } from '@material-ui/core';
 import Carrossel from '../../components/Carrossel';
 import Formulario from '../../components/Formulario';
-import BuscasDogs from '../../classes/BuscasDogs';
-import BuscaAtiva from '../../classes/BuscaAtiva';
-import DisplayBusca from '../../components/DisplayBusca';
+import CadastrosSalvos from '../../classes/CadastrosSalvos';
+import CadastroAtual from '../../classes/CadastroAtual';
+import DisplayCadastro from '../../components/DisplayCadastro';
 
 interface ContainerProps {}
 interface ContainerState {}
 
 class Cadastro extends Component<ContainerProps, ContainerState> {
-  buscas: BuscasDogs
+  cadastros: CadastrosSalvos
 
-    buscaAtiva: BuscaAtiva
+  cadastroAtual: CadastroAtual
 
-  attBuscas: Function
+  attCadastros: Function
 
   constructor(props: ContainerProps) {
     super(props);
 
-    // visando a escalabilidade do projeto foram utilizados dois objetos
-    // que fucionam como Observables que guardam os valores que seriam states
-    // desta maneira pode-se passar eles como props no lugar do state, assim 
-    // quando os valores são atualizados o componente pai não é re-renderizado
-    this.buscas = new BuscasDogs();
-    this.buscaAtiva = new BuscaAtiva();
-    this.attBuscas = this.atualizaBuscas.bind(this);
+    /* que fucionam como Observables que guardam os valores que seriam states
+     visando a escalabilidade do projeto foram utilizados dois objetos
+     desta maneira pode-se passar eles como props no lugar do state, assim 
+     quando os valores são atualizados o componente pai não é re-renderizado
+    */
+    this.cadastros = new CadastrosSalvos();
+    this.cadastroAtual = new CadastroAtual();
+    this.attCadastros = this.atualizaCadastros.bind(this);
   }
 
   componentDidMount() {
-    this.buscas.inscrever(this.attBuscas);
+    this.cadastros.subscribe(this.attCadastros);
   }
 
   componentWillUnmount() {
-    this.buscas.desinscrever(this.attBuscas);
+    this.cadastros.unsubscribe(this.attCadastros);
   }
 
-  atualizaBuscas = (buscas: []) => {
+  atualizaCadastros = (novosCadastros: []) => {
     this.setState((prevState) => {
-      const newState = { ...prevState, buscas };
+      const newState = { ...prevState, novosCadastros };
       this.setState(newState);
     });
   }
@@ -47,10 +48,10 @@ class Cadastro extends Component<ContainerProps, ContainerState> {
   render() {
     return (
       <div className="cadastro_container">
-        <DisplayBusca busca={this.buscaAtiva} />
+        <DisplayCadastro cadastro={this.cadastroAtual} />
         <Container maxWidth="sm" className="card_main">
-          <Formulario buscas={this.buscas} buscaAtiva={this.buscaAtiva} />
-          <Carrossel buscasSalvas={this.buscas} />
+          <Formulario cadastros={this.cadastros} cadastroAtual={this.cadastroAtual} />
+          <Carrossel cadastrosSalvos={this.cadastros} />
         </Container>
       </div>
     );

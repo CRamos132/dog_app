@@ -1,13 +1,13 @@
 import React from 'react'
 import Formulario from '../components/Formulario'
 import { render, waitForElement, fireEvent, act } from '@testing-library/react'
-import BuscaAtiva from '../classes/BuscaAtiva'
-import BuscasDogs from '../classes/BuscasDogs'
+import CadastroAtual from '../classes/CadastroAtual'
+import CadastrosSalvos from '../classes/CadastrosSalvos'
 
 describe('O componente de formulário', () => {
     it('Deve avisar se há campos vazios', async () => {
         await act( async () => {
-            const { getByTestId, getByText } = render(<Formulario buscas={new BuscasDogs()} buscaAtiva={new BuscaAtiva()} />)
+            const { getByTestId, getByText } = render(<Formulario cadastros={new CadastrosSalvos()} cadastroAtual={new CadastroAtual()} />)
             const formBtn = await waitForElement(
                 () => getByTestId('form_btn_submit')
             )
@@ -19,7 +19,7 @@ describe('O componente de formulário', () => {
     })
     it('Deve limitar o tamanho do nome digitado', async () => {
         await act( async () => {
-            const { getByTestId } = render(<Formulario buscas={(new BuscasDogs())} buscaAtiva={new BuscaAtiva()} />)
+            const { getByTestId } = render(<Formulario cadastros={(new CadastrosSalvos())} cadastroAtual={new CadastroAtual()} />)
             const formBtn = await waitForElement(
                 () => getByTestId('form_btn_submit')
             )
@@ -39,7 +39,7 @@ describe('O componente de formulário', () => {
     })
     it('Deve limitar a idade do cachorro', async () => {
         await act( async () => {
-            const { getByTestId } = render(<Formulario buscas={new BuscasDogs()} buscaAtiva={new BuscaAtiva()} />)
+            const { getByTestId } = render(<Formulario cadastros={new CadastrosSalvos()} cadastroAtual={new CadastroAtual()} />)
             const formBtn = await waitForElement(
                 () => getByTestId('form_btn_submit')
             )

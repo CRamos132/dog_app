@@ -1,27 +1,27 @@
 import React, { useState, useEffect } from 'react';
 import './index.css';
 import { Container } from '@material-ui/core';
-import BuscasDogs from '../../classes/BuscasDogs';
-import Busca from '../../interfaces/Busca';
+import CadastrosSalvos from '../../classes/CadastrosSalvos';
+import Cadastro from '../../interfaces/Cadastro';
 import Miniatura from '../Miniatura';
 
 type CarrosselProps = {
-    buscasSalvas: BuscasDogs
+    cadastrosSalvos: CadastrosSalvos
 }
-function Carrossel({ buscasSalvas }: CarrosselProps) {
-  const [buscas, setBuscas] = useState([] as Busca[]);
+function Carrossel({ cadastrosSalvos }: CarrosselProps) {
+  const [cadastros, setCadastros] = useState([] as Cadastro[]);
 
   useEffect(() => {
-    const buscasCache = localStorage.getItem('buscas');
-    buscasSalvas.inscrever(setBuscas);
-    if (buscasCache) {
-      JSON.parse(buscasCache).forEach((busca: Busca) => buscasSalvas.addBusca(busca));
+    const cadastrosCache = localStorage.getItem('cadastros');
+    cadastrosSalvos.subscribe(setCadastros);
+    if (cadastrosCache) {
+      JSON.parse(cadastrosCache).forEach((cadastro: Cadastro) => cadastrosSalvos.addCadastro(cadastro));
     }
   }, []);
 
   return (
     <Container className="card_carrossel">
-      {buscas.map((busca: Busca, index: number) => <Miniatura key={index} busca={busca} />)}
+      {cadastros.map((cadastro: Cadastro, index: number) => <Miniatura key={index} cadastro={cadastro} />)}
     </Container>
   );
 }

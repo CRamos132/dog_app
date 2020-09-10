@@ -1,4 +1,4 @@
-export default interface Busca {
+export default interface Cadastro {
     nome: string,
     idade: string,
     cor: string,

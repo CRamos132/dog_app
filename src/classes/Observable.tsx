@@ -1,20 +1,20 @@
 class Observable {
-    inscritos: Function[]
+    subscribed: Function[]
 
     constructor() {
-      this.inscritos = [];
+      this.subscribed = [];
     }
 
-    inscrever(func: Function) {
-      this.inscritos.push(func);
+    subscribe(func: Function) {
+      this.subscribed.push(func);
     }
 
-    desinscrever(func: Function) {
-      this.inscritos = this.inscritos.filter((inscrito) => inscrito !== func);
+    unsubscribe(func: Function) {
+      this.subscribed = this.subscribed.filter((inscrito) => inscrito !== func);
     }
 
-    notificar(param: any) {
-      this.inscritos.forEach((funcao) => funcao(param));
+    notify(param: any) {
+      this.subscribed.forEach((funcao) => funcao(param));
     }
 }
 

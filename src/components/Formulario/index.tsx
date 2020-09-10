@@ -3,19 +3,19 @@ import {
   Typography, TextField, InputLabel, Input, Select, MenuItem, Button,
 } from '@material-ui/core';
 import BuscaApi from '../../repositories/BuscaApi';
-import Busca from '../../interfaces/Busca';
-import BuscasDogs from '../../classes/BuscasDogs';
+import Cadastro from '../../interfaces/Cadastro';
+import CadastrosSalvos from '../../classes/CadastrosSalvos';
 import './index.css';
-import BuscaAtiva from '../../classes/BuscaAtiva';
+import CadastroAtual from '../../classes/CadastroAtual';
 import Modal from '../Modal';
 
 type FormularioProps = {
-    buscas: BuscasDogs
-    buscaAtiva: BuscaAtiva
+    cadastros: CadastrosSalvos
+    cadastroAtual: CadastroAtual
 }
 
-function Formulario({ buscas, buscaAtiva }: FormularioProps) {
-  const valoresIniciais: Busca = {
+function Formulario({ cadastros, cadastroAtual }: FormularioProps) {
+  const valoresIniciais: Cadastro = {
     idade: '',
     nome: '',
     cor: '#000000',
@@ -27,16 +27,19 @@ function Formulario({ buscas, buscaAtiva }: FormularioProps) {
   const modalInicial = { aberto: false, texto: 'Favor preencher todos os campos', extra: () => {} };
   const [racas, setRacas] = useState([]);
   const [subRaca, setSubraca] = useState<string[]>([]);
-  const [valores, setValores] = useState<Busca>(valoresIniciais);
+  const [valores, setValores] = useState<Cadastro>(valoresIniciais);
   const [modal, setModal] = useState(modalInicial);
 
-  //retorna uma URL de imagem
-  function selecionaImagem(buscaS: Busca) {
+  /**
+   * Retorna uma URL de imagem
+   * @param cadastro
+   */
+  function selecionaImagem(cadastro: Cadastro) {
     let urlImgA = 'https://dog.ceo/api/breeds/image/random';
-    if (buscaS.raca && buscaS.raca !== '') {
-      urlImgA = `https://dog.ceo/api/breed/${buscaS.raca}`;
-      if (buscaS.subraca !== '') {
-        urlImgA += `/${buscaS.subraca}`;
+    if (cadastro.raca && cadastro.raca !== '') {
+      urlImgA = `https://dog.ceo/api/breed/${cadastro.raca}`;
+      if (cadastro.subraca !== '') {
+        urlImgA += `/${cadastro.subraca}`;
       }
       urlImgA += '/images';
     }
@@ -49,11 +52,14 @@ function Formulario({ buscas, buscaAtiva }: FormularioProps) {
       });
   }
 
-  // cria um novo state com uma imagem baseada na busca atual
-  function novoStateImg(stateAtual: Busca) {
+  /**
+   * Cria um novo state com uma imagem baseada no cadastro passado
+   * @param stateAtual 
+   */
+  function novoStateImg(stateAtual: Cadastro) {
     return selecionaImagem(stateAtual)
       .then((dado) => {
-        const stateN: Busca = { ...stateAtual, urlImg: dado };
+        const stateN: Cadastro = { ...stateAtual, urlImg: dado };
         return stateN;
       })
       .catch((res: Response) => {
@@ -70,24 +76,26 @@ function Formulario({ buscas, buscaAtiva }: FormularioProps) {
         alert('Algo deu errado, favor tentar novamente');
         console.log(res.text)
       });
-    buscaAtiva.inscrever(setValores);
+    cadastroAtual.subscribe(setValores);
     let stateInicial = valoresIniciais
-    // verifica se há alguma busca no localStorage
-    const buscaString = localStorage.getItem('buscaAtual');
-    if (buscaString) {
-      stateInicial = JSON.parse(buscaString);
+    // verifica se há algum cadastro no localStorage
+    const cadastroString = localStorage.getItem('cadastroAtual');
+    if (cadastroString) {
+      stateInicial = JSON.parse(cadastroString);
     }
     setSubraca([stateInicial.subraca]);
     attState(stateInicial);
   }, []);
 
-  // atualiza o state e salva a busca no localStorage
-  function attState(state: Busca) {
-    localStorage.setItem('buscaAtual', JSON.stringify(state));
-    buscaAtiva.atualizaBusca(state);
+  /**
+   * Atualiza o state e salva o cadastro no localStorage
+   * @param state 
+   */
+  function attState(state: Cadastro) {
+    localStorage.setItem('cadastroAtual', JSON.stringify(state));
+    cadastroAtual.atualizaCadastro(state);
   }
 
-  // é passado any para pode lidar com evento de input e de select
   async function handleChange(e: any) {
     const campo: string = e.target.name;
     const input: string = e.target.value;
@@ -131,16 +139,19 @@ function Formulario({ buscas, buscaAtiva }: FormularioProps) {
 
     attState(tempState);
   }
-  const adicionaBusca = () => {
-    const novaBusca = buscaAtiva.getBusca();
-    buscas.addBusca(novaBusca);
+  const salvaCadastro = () => {
+    const novoCadastro = cadastroAtual.getCadastro();
+    cadastros.addCadastro(novoCadastro);
     setValores(valoresIniciais);
     attState(valoresIniciais);
   };
 
-  // faz validação do envio do formulário
+  /**
+   * Faz validações do envio do formulário
+   * @param e 
+   */
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
-    let modalState = { aberto: true, extra: adicionaBusca, texto: 'Cachorro cadastrado com sucesso' };
+    let modalState = { aberto: true, extra: salvaCadastro, texto: 'Cachorro cadastrado com sucesso' };
     e.preventDefault();
     if (valores.raca === '' || valores.idade === '' || valores.nome === '') {
       modalState = { ...modal, aberto: true };
